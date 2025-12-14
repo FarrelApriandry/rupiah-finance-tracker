@@ -66,7 +66,7 @@ Follow these instructions to set up the project locally.
 1. Clone the repository
 
 ```text
-git clone [https://github.com/your-username/rupiah-finance-tracker.git](https://github.com/your-username/rupiah-finance-tracker.git)
+git clone [https://github.com/FarrelApriandry/rupiah-finance-tracker.git](https://github.com/your-username/rupiah-finance-tracker.git)
 ```
 
 2. Install dependencies Navigate to the project directory and run:
