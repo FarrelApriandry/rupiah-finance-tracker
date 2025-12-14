@@ -52,7 +52,8 @@ lib/
 │   ├── auth/               # Authentication logic and UI
 │   ├── transactions/       # Transaction data layer, domain, and presentation
 │   └── wallets/            # Wallet management and dashboard UI
-└── main.dart               # Application entry point```
+└── main.dart               # Application entry point
+```
 
 ## Getting Started
 Follow these instructions to set up the project locally.
@@ -64,14 +65,20 @@ Follow these instructions to set up the project locally.
 ### Installation
 1. Clone the repository
 
-```git clone [https://github.com/your-username/rupiah-finance-tracker.git](https://github.com/your-username/rupiah-finance-tracker.git)```
+```text
+git clone [https://github.com/your-username/rupiah-finance-tracker.git](https://github.com/your-username/rupiah-finance-tracker.git)
+```
 
 2. Install dependencies Navigate to the project directory and run:
 
-```flutter pub get```
+```text
+flutter pub get
+```
 
 3. Configure Firebase Ensure you have the google-services.json (for Android) and GoogleService-Info.plist (for iOS) placed in their respective directories (android/app/ and ios/Runner/).
 
 4. Run the application
 
-```flutter run```
+```text
+flutter run
+```
