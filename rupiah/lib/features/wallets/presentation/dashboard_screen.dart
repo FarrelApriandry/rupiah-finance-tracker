@@ -8,6 +8,7 @@ import '../../transactions/presentation/transaction_controller.dart'; // Import 
 import '../../transactions/presentation/transaction_history_screen.dart'; // Import Screen History
 import '../../transactions/presentation/widgets/transaction_item.dart'; // Import Widget Item
 import '../../../core/utils/currency_formatter.dart';
+import '../../wallets/presentation/wallet_detail_screen.dart';
 import 'wallet_controller.dart';
 import 'balance_provider.dart';
 
@@ -377,7 +378,6 @@ class DashboardScreen extends ConsumerWidget {
   }
 }
 
-// Update Widget Kartu Dompet jadi versi Kotak (Vertical Card)
 class _WalletCard extends ConsumerWidget {
   final String walletId;
   const _WalletCard({required this.walletId});
@@ -385,56 +385,91 @@ class _WalletCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final wallets = ref.watch(walletListProvider).value ?? [];
+
+    // Safety check kalau wallet baru dihapus tapi UI belum rebuild
+    if (!wallets.any((w) => w.id == walletId)) return const SizedBox();
+
     final wallet = wallets.firstWhere((w) => w.id == walletId);
     final currentBalance = ref.watch(walletBalanceProvider(walletId));
 
     return Card(
-      elevation: 2,
+      elevation: 4,
+      shadowColor: Color(wallet.color).withOpacity(0.4),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(wallet.color).withOpacity(0.8), Color(wallet.color)],
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Icon(
-              Icons.account_balance_wallet,
-              color: Colors.white.withOpacity(0.8),
+      child: InkWell(
+        // <--- INTERAKSI CLICK DIMULAI DI SINI
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => WalletDetailScreen(walletId: walletId),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  wallet.name,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  NumberFormat.currency(
-                    locale: 'id_ID',
-                    symbol: 'Rp ',
-                    decimalDigits: 0,
-                  ).format(currentBalance),
-                  style: const TextStyle(color: Colors.white, fontSize: 13),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
+          );
+        },
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: const EdgeInsets.all(16), // Padding digedein dikit biar lega
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color(wallet.color).withOpacity(0.8),
+                Color(wallet.color),
               ],
             ),
-          ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(
+                    Icons.account_balance_wallet,
+                    color: Colors.white.withOpacity(0.8),
+                  ),
+                  const Icon(
+                    Icons.arrow_forward_ios,
+                    color: Colors.white54,
+                    size: 14,
+                  ),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    wallet.name,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    NumberFormat.currency(
+                      locale: 'id_ID',
+                      symbol: 'Rp ',
+                      decimalDigits: 0,
+                    ).format(currentBalance),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
