@@ -4,12 +4,13 @@ import 'package:intl/intl.dart';
 import '../../auth/presentation/auth_controller.dart';
 import '../../auth/data/auth_repository.dart';
 import '../../transactions/presentation/widgets/add_transaction_sheet.dart';
-import '../../transactions/presentation/transaction_controller.dart'; // Import Provider Transaksi
-import '../../transactions/presentation/transaction_history_screen.dart'; // Import Screen History
-import '../../transactions/presentation/widgets/transaction_item.dart'; // Import Widget Item
+import '../../transactions/presentation/transaction_controller.dart';
+import '../../transactions/presentation/transaction_history_screen.dart';
+import '../../transactions/presentation/widgets/transaction_item.dart';
 import '../../../core/utils/currency_formatter.dart';
-import '../../wallets/presentation/wallet_detail_screen.dart';
+import '../../reports/presentation/reports_screen.dart'; // <--- IMPORT SCREEN BARU
 import 'wallet_controller.dart';
+import 'wallet_detail_screen.dart';
 import 'balance_provider.dart';
 
 class DashboardScreen extends ConsumerWidget {
@@ -19,9 +20,7 @@ class DashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(authRepositoryProvider).currentUser;
     final walletListAsync = ref.watch(walletListProvider);
-    final transactionListAsync = ref.watch(
-      transactionListProvider,
-    ); // Ambil data transaksi
+    final transactionListAsync = ref.watch(transactionListProvider);
     final netWorth = ref.watch(netWorthProvider);
 
     return Scaffold(
@@ -47,8 +46,20 @@ class DashboardScreen extends ConsumerWidget {
           ],
         ),
         actions: [
+          // TOMBOL ANALISIS BARU DI SINI
+          IconButton(
+            icon: const Icon(Icons.pie_chart_outline, color: Colors.black),
+            tooltip: "Analisis Pengeluaran",
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ReportsScreen()),
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.add_card, color: Colors.black),
+            tooltip: "Tambah Dompet",
             onPressed: () => _showAddWalletDialog(context, ref),
           ),
           IconButton(
@@ -70,7 +81,7 @@ class DashboardScreen extends ConsumerWidget {
           );
         },
         label: const Text("Transaksi"),
-        icon: const Icon(Icons.edit_note), // Icon baru
+        icon: const Icon(Icons.edit_note),
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
       ),
@@ -378,6 +389,7 @@ class DashboardScreen extends ConsumerWidget {
   }
 }
 
+// Widget Kartu Dompet (Update dengan InkWell)
 class _WalletCard extends ConsumerWidget {
   final String walletId;
   const _WalletCard({required this.walletId});
