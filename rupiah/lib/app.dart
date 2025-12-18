@@ -4,7 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'features/auth/data/auth_repository.dart';
 import 'features/auth/presentation/login_screen.dart';
 import 'features/wallets/presentation/dashboard_screen.dart';
-import 'core/providers/theme_provider.dart'; // Import Provider Tema
+import 'core/providers/theme_provider.dart';
+import 'core/widgets/biometric_gate.dart'; // Import Gate Baru
 
 final authStateProvider = StreamProvider<User?>((ref) {
   return ref.watch(authRepositoryProvider).authStateChanges;
@@ -16,7 +17,6 @@ class FinanceApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authStateProvider);
-    // Watch Theme Provider
     final themeMode = ref.watch(themeModeProvider);
 
     return MaterialApp(
@@ -25,18 +25,22 @@ class FinanceApp extends ConsumerWidget {
       theme: ThemeData(
         useMaterial3: true,
         colorSchemeSeed: Colors.green,
-        brightness: Brightness.light, // Tema Terang
+        brightness: Brightness.light,
       ),
       darkTheme: ThemeData(
         useMaterial3: true,
         colorSchemeSeed: Colors.green,
-        brightness: Brightness.dark, // Tema Gelap
+        brightness: Brightness.dark,
       ),
-      themeMode: themeMode, // <--- DINAMIS DARI SINI
+      themeMode: themeMode,
+
+      // LOGIC GATE
       home: authState.when(
         data: (user) {
           if (user != null) {
-            return const DashboardScreen();
+            // Bungkus Dashboard dengan BiometricGate
+            // Jadi fitur lock cuma jalan kalau udah Login
+            return const BiometricGate(child: DashboardScreen());
           } else {
             return const LoginScreen();
           }
